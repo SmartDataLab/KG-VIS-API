@@ -44,6 +44,6 @@ def cypher_result(limit: int):
         [type]: [description]
     """
     res = graph.run(
-        "MATCH p=(:Character)-[:INTERACTS]->(:Character) RETURN p LIMIT %s" % limit
+        f"MATCH p=(:Character)-[:INTERACTS]->(:Character) RETURN p LIMIT {limit}"
     ).data()
     return {"res": res}
