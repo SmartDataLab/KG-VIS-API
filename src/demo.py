@@ -36,14 +36,29 @@ def read_item(item_id: int, q_option: Optional[str] = None):
     return {"item_id": item_id, "q": q_option}
 
 
-@app.get("/neo/{limit}")
-def cypher_result(limit: int):
+@app.get("/neo/{label}")
+def cypher_result(
+    label: str,
+    limit: Optional[int] = 300,
+    id: Optional[int] = 19,
+    maxDepth: Optional[int] = 3,
+    type_id_str: Optional[str] = "c_id",
+):
     """[summary]
 
     Returns:
         [type]: [description]
     """
     res = graph.run(
-        f"MATCH p=(:Character)-[:INTERACTS]->(:Character) RETURN p LIMIT {limit}"
+        f"MATCH (a:{label}"
+        + " {"
+        + type_id_str
+        + ':"'
+        + str(id)
+        + '"}'
+        + ") WITH id(a) AS startNode CALL gds.alpha.bfs.stream('myGraph', {"
+        + f"startNode: startNode, maxDepth: {maxDepth}"
+        + "}"
+        + f") YIELD path UNWIND [ n in nodes(path) | n ] AS node RETURN node LIMIT {limit}"
     ).data()
     return {"res": res}
