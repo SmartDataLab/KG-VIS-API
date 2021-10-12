@@ -45,3 +45,40 @@ uvicorn demo:app --host=0.0.0.0 --port=4002 --reload
   ]
 }
 ```
+
+- option for echarts graph
+
+https://echarts.apache.org/en/option.html#series-graph
+
+```json
+{
+  "nodes": [
+    {
+      "id": "0",
+      "symbol": "rect",
+      "symbolSize": 20.1,
+      "x": 10,
+      "y": 20,
+      "category": 1
+    },
+    {
+      "id": "1",
+      "symbolSize": 20.1,
+      "x": 10,
+      "y": 20,
+      "category": 0,
+      "itemStyle": { "color": "rgb(255,255,255)" }
+    }
+  ],
+  "links": [
+    {
+      "source": "0",
+      "target": "1",
+      "value": 10,
+      "lineStyle": { "color": "rgb(255,255,255)" }
+    },
+    { "source": "1", "target": "0", "value": 4, "symbolSize": 20.1 }
+  ],
+  "categories": [{ "name": "CASE" }, { "name": "ACTION" }]
+}
+```

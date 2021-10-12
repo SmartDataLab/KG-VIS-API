@@ -74,6 +74,8 @@ def process_output(data: dict):
                         id_value = int(attr_value)
                         node["id"] = id_value + cate2idx[id_name.split("_")[0]] * 1000
                         node["category"] = cate2idx[id_name.split("_")[0]]
+                    else:
+                        node["name"] = attr_value
                 nodes.append(node)
             else:
                 link = {"source": "0", "target": "1"}
