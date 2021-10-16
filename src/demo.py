@@ -130,7 +130,8 @@ from attention import model
 from attention.model import BERT
 from attention.load_model import get_model
 
-word2idx = pickle.load(open("../model/word2idx.pickle", "rb"))
+id2word = pickle.load(open("../model/idx2word_v2.pickle", "rb"))
+word2idx = {value: key for key, value in id2word.items()}
 MODEL_PATH = "../model/BertModel.pth"
 batch_size = 32
 read_num = 100
@@ -143,9 +144,11 @@ model2 = get_model()
 # model2.load_state_dict(torch.load(MODEL_PATH))
 # model2 = torch.load(MODEL_PATH)
 # predict(model, batch, 0)
+model2 = model2.to(torch.device("cpu"))
 #%%
 # w_across_layers = cal_layer_weight(model)
 w_across_layers = torch.tensor([0.8335, 0.1133, 0.0532])
+w_across_layers = torch.tensor([0.2268, 0.2608, 0.1906, 0.1782, 0.0929, 0.0506])
 
 # %%
 def gelu(x):
@@ -169,6 +172,20 @@ def attn_vis(model, example, w, word2idx, pooling=True):
     d_k = d_v = 64  # dimension of K(=Q), V
     n_segments = 2
     alpha = 0.3
+
+    MAX_DOC_LEN = 100
+    maxlen = MAX_DOC_LEN // 2 + 10  # 输入文本的最大词长度，与padding相关
+    batch_size = 32
+    max_pred = MAX_DOC_LEN // 2 + 10  # 最大预测词长度，需要padding和mask
+    n_layers = 6
+    n_heads = 6
+    d_k = d_v = 24  # dimension of K(=Q), V
+    d_model = n_heads * d_v  # equal to n_heads * d_v
+    d_ff = d_model * 4  # 4*d_model, FeedForward dimension
+    lower_dimension = 5
+    kg_emb_dimension = 5
+    alpha = 0.1
+    n_graph_heads = 3
     token_input = ["[CLS]"] + list(jieba.cut(example))
     test_input = [word2idx[item] for item in token_input]
     word_embedding = model.embedding(torch.tensor(test_input).unsqueeze(dim=0))
@@ -220,15 +237,15 @@ def attn_vis(model, example, w, word2idx, pooling=True):
     return {"token_input": token_input, "heat_matrix": m}
 
 
-def cor_map(value):
-    return round(value * 10)
+def cor_map(value, factor=10):
+    return round(value * factor)
 
 
 def process_heatmap_data(matrix_list_data):
     data = []
     for i, row in enumerate(matrix_list_data):
         for j, one in enumerate(row):
-            data.append([i, j, cor_map(one)])
+            data.append([i, j, cor_map(one, 30)])
     return data
 
 
