@@ -249,11 +249,30 @@ def process_heatmap_data(matrix_list_data):
     return data
 
 
+def process_graph_link_data(matrix_list_data, token_input, threshold):
+    nodes = []
+    links = []
+    for i, node in enumerate(token_input):
+        nodes.append({"id": str(i), "name": node})
+    for i, row in enumerate(matrix_list_data):
+        for j, one in enumerate(row):
+            if abs(one) > threshold:
+                if one > 0:
+                    links.append(
+                        {"source": str(i), "target": str(j), "value": abs(one)}
+                    )
+    return {"nodes": nodes, "links": links}
+
+
 @app.get("/bert_heat/{example}")
 def cypher_result(
     example: str,
+    threshold: Optional[float] = 0.1,
 ):
     # example = "被告的诉请证据不足，本院不予审理。"
     data = attn_vis(model2, example, w_across_layers, word2idx)
     data["echart_data"] = process_heatmap_data(data["heat_matrix"])
+    data["echart_graph_data"] = process_graph_link_data(
+        data["heat_matrix"], data["token_input"], threshold
+    )
     return data
