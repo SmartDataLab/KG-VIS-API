@@ -4,7 +4,7 @@
 
 - check the pylint and fix it
 ```bash
-cd src && pylint `ls -R|grep .py$|xargs`
+cd src && pylint `git ls-files|grep .py$| grep -v ^AugModel.py$ | grep -v ^model.py$ |xargs`
 ```
 
 ## quick start
