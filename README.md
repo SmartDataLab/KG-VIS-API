@@ -1,7 +1,11 @@
 # KG-VIS-API
 
-try to make it professional
-try again again
+## before commit
+
+- check the pylint and fix it
+```bash
+cd src && pylint `ls -R|grep .py$|xargs`
+```
 
 ## quick start
 
