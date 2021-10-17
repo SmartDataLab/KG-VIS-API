@@ -128,17 +128,18 @@ import torch.nn as nn
 import math
 from attention import model
 from attention.model import BERT
-from attention.load_model import get_model
+from load_model import get_model
 
 id2word = pickle.load(open("../model/idx2word_v2.pickle", "rb"))
 word2idx = {value: key for key, value in id2word.items()}
 MODEL_PATH = "../model/BertModel.pth"
+MODEL_PATH = "../model/AugModel.pth"
 batch_size = 32
 read_num = 100
 MAX_DOC_LEN = 100
 vocab_size = len(word2idx)
 #%%
-model2 = get_model()
+model2 = get_model(MODEL_PATH)
 # batch = make_data(doc_list,token_list,word2idx,labels,max_pred,maxlen)
 # model2 = BERT(vocab_size)
 # model2.load_state_dict(torch.load(MODEL_PATH))

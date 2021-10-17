@@ -1,7 +1,11 @@
 # KG-VIS-API
 
-try to make it professional
-try again
+## before commit
+
+- check the pylint and fix it
+```bash
+cd src && pylint `git ls-files|grep .py$| grep -v ^AugModel.py$ | grep -v ^model.py$ |xargs`
+```
 
 ## quick start
 
